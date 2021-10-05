@@ -1,0 +1,23 @@
+{
+	"compilerOptions": {
+		"target": "ES6",
+		"module": "commonjs",
+		"lib": ["DOM", "DOM.Iterable", "ESNext"],
+		"allowJs": true,
+		"noEmit": false,
+		"strict": true,
+		"noImplicitAny": true,
+		"noFallthroughCasesInSwitch": true,
+		"moduleResolution": "node",
+		"allowSyntheticDefaultImports": true,
+		"esModuleInterop": true,
+		"allowUmdGlobalAccess": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"isolatedModules": true,
+		"resolveJsonModule": true,
+		"jsx": "react-jsx"
+	},
+	"include": ["src"],
+	"exclude": ["node_modules"]
+}
