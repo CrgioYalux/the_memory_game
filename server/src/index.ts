@@ -1,16 +1,17 @@
-import express from 'express';
 import http from 'http';
-import cors from 'cors';
-import path from 'path';
-
-const app = express();
-app.use(cors());
-app.use(express.json());
-app.use(express.static(path.join(__dirname, '..', '..', 'client', 'build')));
+import { connectToDB } from './mongodb/controller/connection';
+import { app } from './api/app';
 
 const server = http.createServer(app);
-
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => {
-	console.log(`listening on port ${PORT}`);
-});
+
+connectToDB()
+	.then(() => {
+		console.log('Connected to mongoDB');
+		server.listen(PORT, () => {
+			console.log(`Listening on port ${PORT}`);
+		});
+	})
+	.catch((error) => {
+		console.error(`Unable to connect to DB: ${error}`);
+	});
