@@ -10,6 +10,7 @@ module.exports = (env) => {
 		output: {
 			path: path.resolve(__dirname, '..', 'build'),
 			filename: 'bundle.[contenthash].js',
+			publicPath: '/',
 		},
 		mode: env.mode || 'development',
 		resolve: {
@@ -17,6 +18,7 @@ module.exports = (env) => {
 		},
 		devServer: {
 			static: path.resolve(__dirname, '..', 'src'),
+			historyApiFallback: true,
 			port: 3000,
 			hot: true,
 		},
