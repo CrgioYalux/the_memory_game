@@ -13,10 +13,11 @@
 	font-family: monospace;
 	font-weight: 600;
 
-	color: vars.$primary-darker;
 	background-color: transparent;
 	text-align: center;
 	z-index: 1050;
+
+	color: vars.$primary-darker;
 
 	&::before {
 		content: '';
@@ -29,29 +30,22 @@
 		max-width: 100px;
 		height: 100%;
 
-		border: 3px solid vars.$primary-darker;
 		border-radius: 16px;
 		z-index: 50;
 		cursor: pointer;
-	}
 
-	transition: all 0.4s;
+		border: 2px solid vars.$primary-darker;
+	}
 }
 
 #open-navbar {
 	display: none;
-	&:checked + label {
-		color: vars.$secondary-darker;
-		&::before {
-			border-color: vars.$secondary-darker;
-		}
-		& ~ .Navbar-container {
-			left: 0;
-			z-index: 1000;
-			& ~ .Navbar-background {
-				z-index: 500;
-				background-color: rgba(0, 0, 0, 0.4);
-			}
+	&:checked + label ~ .Navbar-container {
+		left: 0;
+		z-index: 1000;
+		& ~ .Navbar-background {
+			z-index: 500;
+			background-color: rgba(0, 0, 0, 0.4);
 		}
 	}
 }
