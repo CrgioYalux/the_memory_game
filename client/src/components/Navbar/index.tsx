@@ -21,12 +21,7 @@ export const Navbar = ({ selectComponent, components }: NavbarProps) => {
 
 	return (
 		<>
-			<input
-				type="checkbox"
-				name="open-navbar"
-				id="open-navbar"
-				defaultChecked
-			/>
+			<input type="checkbox" name="open-navbar" id="open-navbar" />
 			<label htmlFor="open-navbar" className="open-navbar-bt">
 				menu
 			</label>
