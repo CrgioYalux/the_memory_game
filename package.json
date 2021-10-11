@@ -17,6 +17,9 @@
 		"start": "npm run start --workspace=server",
 		"dev": "npm run build && npm run dev:server"
 	},
+	"devDependencies": {
+		"typescript": "4.4.3"
+	},
 	"keywords": [],
 	"license": "MIT"
 }
