@@ -1,0 +1,125 @@
+@use '../../sass/vars';
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap');
+
+.open-navbar-bt {
+	position: absolute;
+
+	top: 10px;
+	left: 0;
+	width: 40vw;
+	max-width: 400px;
+
+	font-size: 2rem;
+	font-family: monospace;
+	font-weight: 600;
+
+	color: vars.$primary-darker;
+	background-color: transparent;
+	text-align: center;
+	z-index: 1050;
+
+	&::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 50%;
+		transform: translate(-50%, 0);
+
+		width: 70%;
+		max-width: 100px;
+		height: 100%;
+
+		border: 3px solid vars.$primary-darker;
+		border-radius: 16px;
+		z-index: 50;
+		cursor: pointer;
+	}
+
+	transition: all 0.4s;
+}
+
+#open-navbar {
+	display: none;
+	&:checked + label {
+		color: vars.$secondary-darker;
+		&::before {
+			border-color: vars.$secondary-darker;
+		}
+		& ~ .Navbar-container {
+			left: 0;
+			z-index: 1000;
+			& ~ .Navbar-background {
+				z-index: 500;
+				background-color: rgba(0, 0, 0, 0.4);
+			}
+		}
+	}
+}
+
+.Navbar-container {
+	position: absolute;
+	top: 0;
+	left: -40%;
+	z-index: -1000;
+
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 5px;
+	background-color: transparent;
+
+	font-size: 2rem;
+	height: 100vh;
+	width: 40vw;
+	max-width: 400px;
+
+	transition: all 0.3s;
+
+	label {
+		width: 100%;
+		text-align: center;
+		padding: 0.4em 0;
+		font-family: 'Source Sans Pro', sans-serif;
+		background-color: vars.$primary-dark;
+		font-size: 0.8em;
+		font-weight: 800;
+		cursor: pointer;
+
+		&[for='Login'] {
+			position: absolute;
+			bottom: 20px;
+			border: 0;
+		}
+	}
+
+	input {
+		display: none;
+		&:checked + label {
+			background-color: vars.$secondary-dark;
+			color: white;
+		}
+	}
+
+	&::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		background-color: vars.$secondary-lightest;
+		opacity: 0.85;
+		z-index: -100;
+	}
+}
+
+.Navbar-background {
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-color: transparent;
+	width: 100vw;
+	height: 100vh;
+	transition: background-color 0.2s 0.2s;
+	z-index: -500;
+}
