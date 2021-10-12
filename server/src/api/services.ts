@@ -21,10 +21,7 @@ export const signUp = (request: Request, response: Response) => {
 		})
 			.save()
 			.then((result) => {
-				if (result) {
-					response.status(201).end();
-				}
-				response.status(400).end();
+				response.status(201).send(result);
 			})
 			.catch((error) => {
 				response.status(503).send({ error });
@@ -36,7 +33,7 @@ export const signUp = (request: Request, response: Response) => {
 
 export const signIn = (request: Request, response: Response) => {
 	if (response.locals.foundUser) {
-		return response.status(200).json(response.locals.foundUser);
+		response.status(200).json(response.locals.foundUser);
 	} else {
 		response.status(404).end();
 	}
