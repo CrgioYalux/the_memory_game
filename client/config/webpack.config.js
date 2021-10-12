@@ -10,7 +10,7 @@ module.exports = (env) => {
 		output: {
 			path: path.resolve(__dirname, '..', 'build'),
 			filename: 'bundle.[contenthash].js',
-			publicPath: '/',
+			publicPath: '/play',
 		},
 		mode: env.mode || 'development',
 		resolve: {
@@ -21,6 +21,16 @@ module.exports = (env) => {
 			historyApiFallback: true,
 			port: 3000,
 			hot: true,
+			proxy: {
+				'/api/**': {
+					target: 'http://localhost:5000',
+					secure: false,
+				},
+				'/auth/**': {
+					target: 'http://localhost:5000',
+					secure: false,
+				},
+			},
 		},
 		module: {
 			rules: [
