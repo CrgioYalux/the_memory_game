@@ -18,6 +18,7 @@ export const Login = () => {
 	const [usernameInputEval, setUsernameInputEval] = useState<boolean>(false);
 
 	const evalUsername = (event: React.ChangeEvent<HTMLInputElement>) => {
+		event.currentTarget.value = event.currentTarget.value.replaceAll(' ', '');
 		const evaluate = evalInputRegex.test(event.currentTarget.value);
 		if (evaluate !== usernameInputEval) {
 			setUsernameInputEval(evaluate);
