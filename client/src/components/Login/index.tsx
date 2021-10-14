@@ -10,7 +10,7 @@ import {
 
 export const Login = () => {
 	const [loginOption, setLoginOption] = useState<LoginOption>(
-		LoginOption.SignUp,
+		LoginOption.Unselected,
 	);
 	const [loginState, setLoginState] = useState<LoginState>(
 		LoginState.NotLogged,
