@@ -8,24 +8,28 @@ export const signUp = (request: Request, response: Response) => {
 	};
 
 	if (data.username && data.nickname && !response.locals.foundUser) {
-		return new ScoreModel({
-			player: {
-				username: data.username,
-				nickname: data.nickname,
-			},
-			game: {
-				points: 0,
-				time: '--:--:--',
-			},
-			updatedAt: new Date(),
-		})
-			.save()
-			.then((result) => {
-				response.status(201).send(result);
+		if (data.username.toUpperCase() !== data.nickname.toUpperCase()) {
+			return new ScoreModel({
+				player: {
+					username: data.username,
+					nickname: data.nickname,
+				},
+				game: {
+					points: 0,
+					time: '--:--:--',
+				},
+				updatedAt: new Date(),
 			})
-			.catch((error) => {
-				response.status(503).send({ error });
-			});
+				.save()
+				.then((result) => {
+					response.status(201).send(result);
+				})
+				.catch((error) => {
+					response.status(503).send({ error });
+				});
+		} else {
+			response.status(409).end();
+		}
 	} else {
 		response.status(400).end();
 	}
