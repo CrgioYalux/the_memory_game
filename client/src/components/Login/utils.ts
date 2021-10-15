@@ -10,12 +10,11 @@ export const signUp = (event: SyntheticEvent) => {
 			value: string;
 		};
 	};
-	console.log(target.username, target.nickname);
 
 	if (target.username.value && target.nickname.value) {
 		return axios.post('../auth/signup', {
 			username: target.username.value,
-			nickname: target.username.value,
+			nickname: target.nickname.value,
 		});
 	}
 };
