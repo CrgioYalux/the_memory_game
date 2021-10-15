@@ -46,6 +46,8 @@ export const Login = () => {
 				.catch((error) => {
 					if (error.response.status === 400) {
 						setLoginState(LoginState.Failed_ExistingAccount);
+					} else if (error.response.status === 409) {
+						setLoginState(LoginState.Failed_RepeatedData);
 					} else if (error.response.status === 503) {
 						setLoginState(LoginState.Failed_NoService);
 					}
