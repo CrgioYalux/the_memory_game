@@ -1,0 +1,15 @@
+@use '../../../sass/vars';
+
+.Login_State {
+	position: relative;
+	top: 50px;
+	color: darken($color: vars.$primary-darkest, $amount: 5);
+	font-size: 1rem;
+	padding: 0.6em 1em;
+	max-width: 90vw;
+	border: 1px solid currentColor;
+	text-align: center;
+	strong {
+		font-family: monospace;
+	}
+}

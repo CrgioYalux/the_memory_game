@@ -1,12 +1,14 @@
 import './Login.scss';
-import { useState } from 'react';
+import { useState, SyntheticEvent, Fragment } from 'react';
 import {
 	signUp,
 	signIn,
 	LoginOption,
 	LoginState,
-	evalInputRegex,
+	usernameRegex,
 } from './utils';
+import { DisplayLoginState } from './DisplayLoginState';
+import { DisplayLoginOption } from './DisplayLoginOption';
 
 export const Login = () => {
 	const [loginOption, setLoginOption] = useState<LoginOption>(
@@ -15,16 +17,6 @@ export const Login = () => {
 	const [loginState, setLoginState] = useState<LoginState>(
 		LoginState.NotLogged,
 	);
-	const [usernameInputEval, setUsernameInputEval] = useState<boolean>(false);
-
-	const evalUsername = (event: React.ChangeEvent<HTMLInputElement>) => {
-		event.currentTarget.value = event.currentTarget.value.replaceAll(' ', '');
-		const evaluate = evalInputRegex.test(event.currentTarget.value);
-		if (evaluate !== usernameInputEval) {
-			setUsernameInputEval(evaluate);
-		}
-	};
-
 	const selectSignUp = () => setLoginOption(LoginOption.SignUp);
 	const selectSignIn = () => setLoginOption(LoginOption.SignIn);
 	const switchLoginOption = () => {
@@ -32,30 +24,69 @@ export const Login = () => {
 		if (loginOption === LoginOption.SignUp) selectSignIn();
 		setLoginState(LoginState.NotLogged);
 	};
-
-	const handleSubmit = (event: React.SyntheticEvent) => {
+	const isValidSignUpData = ({
+		username,
+		nickname,
+	}: {
+		username: string;
+		nickname: string;
+	}): boolean => {
+		if (
+			!usernameRegex.test(username) ||
+			nickname.length < 1 ||
+			nickname.length > 20
+		) {
+			setLoginState(LoginState.Failed_UnfulfilledRequirements);
+			return false;
+		}
+		if (
+			username.replaceAll(' ', '').toUpperCase() ===
+			nickname.replaceAll(' ', '').toUpperCase()
+		) {
+			setLoginState(LoginState.Failed_RepeatedData);
+			return false;
+		}
+		return true;
+	};
+	const handleSubmit = (event: SyntheticEvent) => {
 		setLoginState(LoginState.Loading);
 		event.preventDefault();
+		const { nickname, username } = event.target as typeof event.target & {
+			username: {
+				value: string;
+			};
+			nickname: {
+				value: string;
+			};
+		};
+
 		if (loginOption === LoginOption.SignUp) {
-			signUp(event)
-				?.then((response) => {
-					if (response.status === 201) {
-						setLoginState(LoginState.Succeed_SignUp);
-					}
+			if (
+				isValidSignUpData({
+					username: username.value,
+					nickname: nickname.value,
 				})
-				.catch((error) => {
-					if (error.response.status === 400) {
-						setLoginState(LoginState.Failed_ExistingAccount);
-					} else if (error.response.status === 409) {
-						setLoginState(LoginState.Failed_RepeatedData);
-					} else if (error.response.status === 503) {
-						setLoginState(LoginState.Failed_NoService);
-					}
-				});
+			) {
+				signUp({ username: username.value, nickname: nickname.value })
+					.then((response) => {
+						if (response.status === 201) {
+							setLoginState(LoginState.Succeed_SignUp);
+						}
+					})
+					.catch((error) => {
+						if (error.response.status === 400) {
+							setLoginState(LoginState.Failed_ExistingAccount);
+						} else if (error.response.status === 409) {
+							setLoginState(LoginState.Failed_RepeatedData);
+						} else if (error.response.status === 503) {
+							setLoginState(LoginState.Failed_NoService);
+						}
+					});
+			}
 		}
 		if (loginOption === LoginOption.SignIn) {
-			signIn(event)
-				?.then((response) => {
+			signIn(username.value)
+				.then((response) => {
 					if (response.status === 200) {
 						setLoginState(LoginState.Succeed_SignIn);
 					}
@@ -78,72 +109,15 @@ export const Login = () => {
 				<button onClick={selectSignIn}>Sign In</button>
 			</div>
 		);
-	else if (loginOption === LoginOption.SignIn)
-		return (
-			<>
-				<form className="Login_SignIn-container" onSubmit={handleSubmit}>
-					<div>
-						<label htmlFor="username">username</label>
-						<input
-							type="text"
-							name="username"
-							id="username"
-							autoFocus
-							required
-						/>
-					</div>
-					<button type="submit">start playing!</button>
-					<span>
-						or <button onClick={switchLoginOption}>create an account</button>
-					</span>
-				</form>
-				{loginState !== LoginState.NotLogged && (
-					<span className="Login_State">
-						<strong>{loginState}</strong>
-					</span>
-				)}
-			</>
-		);
 	else
 		return (
-			<>
-				<form className="Login_SignUp-container" onSubmit={handleSubmit}>
-					<div>
-						<label htmlFor="username">username</label>
-						<input
-							onChange={evalUsername}
-							minLength={7}
-							maxLength={10}
-							type="text"
-							name="username"
-							id="username"
-							className={`${usernameInputEval ? '_valid' : '_unvalid'}`}
-							autoFocus
-							required
-						/>
-					</div>
-					<div>
-						<label htmlFor="nickname">nickname</label>
-
-						<input
-							maxLength={20}
-							type="text"
-							name="nickname"
-							id="nickname"
-							required
-						/>
-					</div>
-					<button type="submit">Use this</button>
-					<span>
-						or{' '}
-						<button onClick={switchLoginOption}>use an existing account</button>
-					</span>
-				</form>
-				{loginState !== LoginState.NotLogged && (
-					<span className="Login_State">
-						<strong>{loginState}</strong>
-					</span>
-				)}
-			</>
+			<Fragment>
+				<DisplayLoginOption
+					handleSubmit={handleSubmit}
+					switchLoginOption={switchLoginOption}
+					loginOptionSelected={loginOption}
+				/>
+				<DisplayLoginState state={loginState} />
+			</Fragment>
 		);
 };

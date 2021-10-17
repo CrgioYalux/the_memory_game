@@ -1,0 +1,26 @@
+@use '../../../sass/vars';
+
+.Tips-container {
+	position: relative;
+	bottom: 20px;
+	list-style: none;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	padding: 10px;
+
+	li {
+		font-size: 0.9rem;
+		font-family: sans-serif;
+		display: flex;
+		flex-direction: row;
+		justify-content: baseline;
+		text-align: justify;
+		gap: 5px;
+		color: vars.$primary;
+
+		span {
+			font-size: 1.8em;
+		}
+	}
+}

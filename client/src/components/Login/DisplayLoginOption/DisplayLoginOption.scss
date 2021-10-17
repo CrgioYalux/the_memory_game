@@ -1,0 +1,82 @@
+@use '../../../sass/vars';
+
+.Login_SignIn-container,
+.Login_SignUp-container {
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+	font-family: sans-serif;
+	font-size: 2rem;
+
+	div {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+
+		label {
+			position: relative;
+			left: 10px;
+			color: vars.$secondary-darker;
+			font-weight: 600;
+			font-size: 1.2em;
+		}
+
+		input {
+			border: 0;
+			border-radius: 99px;
+			background-color: vars.$secondary-darker;
+			color: vars.$primary;
+			font-weight: 400;
+			padding: 0.4em 0.6em;
+			font-size: 0.8em;
+			outline: 3px solid vars.$secondary-lightest;
+			&:focus {
+				&._unvalid {
+					outline-color: darken($color: vars.$primary-darkest, $amount: 10);
+				}
+				&._valid {
+					outline-color: vars.$neutral;
+				}
+			}
+		}
+	}
+
+	button[type='submit'] {
+		font-size: 0.6em;
+		font-weight: 600;
+		width: 50%;
+		border: 0;
+		background-color: transparent;
+		color: vars.$primary-dark;
+		padding: 0.2em 0;
+		border: 3px solid currentColor;
+		border-radius: 16px;
+		cursor: pointer;
+		align-self: center;
+	}
+
+	span {
+		align-self: center;
+		position: relative;
+		bottom: 5px;
+		font-size: 0.8rem;
+		color: vars.$primary-light;
+		font-weight: bold;
+		button {
+			font-family: sans-serif;
+			font-weight: bold;
+			font-size: 1.2em;
+			color: vars.$primary-light;
+			border: 0;
+			background-color: transparent;
+			cursor: pointer;
+		}
+	}
+}
+
+.Login_SignUp-container {
+	div {
+		display: flex;
+		flex-direction: column;
+	}
+}
