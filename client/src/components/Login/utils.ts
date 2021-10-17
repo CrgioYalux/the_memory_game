@@ -31,7 +31,6 @@ export enum LoginState {
 	Failed_ExistingAccount = 'The entered username is already being used.',
 	Failed_NonExistingAccount = 'The entered username does not belong to any account.',
 	Failed_NoService = 'An error occurred while requesting the service. Please, try later.',
-	Succeed = 'Logged in successfully.',
 	Succeed_SignUp = 'Your account has been created successfully.',
 	Succeed_SignIn = 'Logged in successfully.',
 	Loading = 'Loading.',
