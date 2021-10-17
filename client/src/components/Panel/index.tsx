@@ -1,6 +1,7 @@
 import './Panel.scss';
 import { Navbar } from '../Navbar';
-import { useState, Fragment } from 'react';
+import { useState, useEffect, Fragment } from 'react';
+import { useClient } from '../../providers/ClientProvider';
 
 interface PanelProps {
 	value: Component[];
@@ -13,8 +14,23 @@ export type Component = {
 };
 
 export const Panel = ({ value }: PanelProps) => {
+	const { logged } = useClient();
 	const [componentsVisibility, setComponentsVisibility] =
 		useState<Component[]>(value);
+
+	useEffect(() => {
+		setComponentsVisibility((prev) => {
+			return prev.map(({ component, name, visibility }) => {
+				if (name === 'Login') {
+					visibility = !logged;
+				}
+				if (name === 'Scoreboard') {
+					visibility = logged;
+				}
+				return { component, name, visibility };
+			});
+		});
+	}, [logged]);
 
 	return (
 		<Fragment>
