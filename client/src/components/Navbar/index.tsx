@@ -1,6 +1,7 @@
 import './Navbar.scss';
 import { Component } from '../Panel';
 import { Fragment, useRef } from 'react';
+import { useClient } from '../../providers/ClientProvider';
 
 interface NavbarProps {
 	selectComponent: React.Dispatch<React.SetStateAction<Component[]>>;
@@ -9,6 +10,10 @@ interface NavbarProps {
 
 export const Navbar = ({ selectComponent, components }: NavbarProps) => {
 	const openNavbarBTRef = useRef<HTMLInputElement>(null);
+	const logoutBTRef = useRef<HTMLButtonElement>(null);
+	const logoutOptionsRef = useRef<HTMLSpanElement>(null);
+
+	const { logged, logout } = useClient();
 
 	const handleSelect = (componentName: string) => {
 		selectComponent((prev) =>
@@ -23,19 +28,45 @@ export const Navbar = ({ selectComponent, components }: NavbarProps) => {
 		openNavbarBT.checked = false;
 	};
 
+	const handleLogoutBTClick = () => {
+		const logoutBT = logoutBTRef.current as HTMLButtonElement;
+		const logoutOptionsContainer = logoutOptionsRef.current as HTMLSpanElement;
+
+		logoutBT.disabled = !logoutBT.disabled;
+		logoutBT.classList.toggle('hide');
+		logoutOptionsContainer.classList.toggle('hide');
+	};
+
 	return (
-		<>
+		<Fragment>
 			<input
 				type="checkbox"
 				name="open-navbar"
 				id="open-navbar"
 				ref={openNavbarBTRef}
+				defaultChecked
 			/>
 			<label htmlFor="open-navbar" className="open-navbar-bt">
 				menu
 			</label>
-			<div className="Navbar-container" onSubmit={(e) => e.preventDefault()}>
+			<div className="Navbar-container">
 				{components.map(({ name, visibility }) => {
+					if (logged && name === 'Login')
+						return (
+							<Fragment key="Logout">
+								<button
+									className="logout-bt"
+									ref={logoutBTRef}
+									onClick={handleLogoutBTClick}
+								>
+									Logout
+								</button>
+								<span className="logout-options hide" ref={logoutOptionsRef}>
+									<button onClick={logout}>Yes</button>
+									<button onClick={handleLogoutBTClick}>No</button>
+								</span>
+							</Fragment>
+						);
 					return (
 						<Fragment key={name}>
 							<input
@@ -53,6 +84,6 @@ export const Navbar = ({ selectComponent, components }: NavbarProps) => {
 				})}
 			</div>
 			<div className="Navbar-background"></div>
-		</>
+		</Fragment>
 	);
 };

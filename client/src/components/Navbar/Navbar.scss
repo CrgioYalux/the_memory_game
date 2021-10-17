@@ -1,6 +1,17 @@
 @use '../../sass/vars';
 @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap');
 
+@mixin button_navbar {
+	width: 100%;
+	text-align: center;
+	padding: 0.4em 0;
+	font-family: 'Source Sans Pro', sans-serif;
+	background-color: vars.$primary-dark;
+	font-size: 0.6em;
+	font-weight: 800;
+	cursor: pointer;
+}
+
 .open-navbar-bt {
 	position: absolute;
 
@@ -70,14 +81,7 @@
 	transition: all 0.3s;
 
 	label {
-		width: 100%;
-		text-align: center;
-		padding: 0.4em 0;
-		font-family: 'Source Sans Pro', sans-serif;
-		background-color: vars.$primary-dark;
-		font-size: 0.8em;
-		font-weight: 800;
-		cursor: pointer;
+		@include button_navbar;
 
 		&[for='Login'] {
 			position: absolute;
@@ -107,6 +111,36 @@
 	}
 }
 
+.logout-bt,
+.logout-options {
+	@include button_navbar;
+	border: 0;
+	position: absolute;
+	bottom: 20px;
+	height: 50px;
+}
+
+.logout-options {
+	@include button_navbar;
+	cursor: default;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-around;
+	gap: 5px;
+	padding: 0 5px;
+	button {
+		flex: 1 1 auto;
+		font-size: 0.9rem;
+		font-weight: 800;
+		cursor: pointer;
+		border: 0;
+		padding: 5px 0;
+		border-radius: 99px;
+		background-color: vars.$primary;
+	}
+}
+
 .Navbar-background {
 	position: absolute;
 	top: 0;
@@ -116,4 +150,8 @@
 	height: 100vh;
 	transition: background-color 0.2s 0.2s;
 	z-index: -500;
+}
+
+.hide {
+	display: none;
 }
