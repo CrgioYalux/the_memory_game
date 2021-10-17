@@ -1,6 +1,6 @@
 import './Navbar.scss';
 import { Component } from '../Panel';
-import { Fragment } from 'react';
+import { Fragment, useRef } from 'react';
 
 interface NavbarProps {
 	selectComponent: React.Dispatch<React.SetStateAction<Component[]>>;
@@ -8,6 +8,8 @@ interface NavbarProps {
 }
 
 export const Navbar = ({ selectComponent, components }: NavbarProps) => {
+	const openNavbarBTRef = useRef<HTMLInputElement>(null);
+
 	const handleSelect = (componentName: string) => {
 		selectComponent((prev) =>
 			prev.map(({ component, name }) => {
@@ -17,11 +19,18 @@ export const Navbar = ({ selectComponent, components }: NavbarProps) => {
 				return { component, name, visibility: false };
 			}),
 		);
+		const openNavbarBT = openNavbarBTRef.current as HTMLInputElement;
+		openNavbarBT.checked = false;
 	};
 
 	return (
 		<>
-			<input type="checkbox" name="open-navbar" id="open-navbar" />
+			<input
+				type="checkbox"
+				name="open-navbar"
+				id="open-navbar"
+				ref={openNavbarBTRef}
+			/>
 			<label htmlFor="open-navbar" className="open-navbar-bt">
 				menu
 			</label>
