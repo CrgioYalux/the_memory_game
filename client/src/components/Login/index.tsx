@@ -9,6 +9,7 @@ import {
 } from './utils';
 import { DisplayLoginState } from './DisplayLoginState';
 import { DisplayLoginOption } from './DisplayLoginOption';
+import { useClient, Client } from '../../providers/ClientProvider';
 
 export const Login = () => {
 	const [loginOption, setLoginOption] = useState<LoginOption>(
@@ -17,6 +18,7 @@ export const Login = () => {
 	const [loginState, setLoginState] = useState<LoginState>(
 		LoginState.NotLogged,
 	);
+	const { setClient } = useClient();
 	const selectSignUp = () => setLoginOption(LoginOption.SignUp);
 	const selectSignIn = () => setLoginOption(LoginOption.SignIn);
 	const switchLoginOption = () => {
@@ -87,6 +89,9 @@ export const Login = () => {
 		if (loginOption === LoginOption.SignIn) {
 			signIn(username.value)
 				.then((response) => {
+					const { username, ...client } =
+						response.data as typeof response.data & Client;
+					setClient(client);
 					if (response.status === 200) {
 						setLoginState(LoginState.Succeed_SignIn);
 					}
@@ -99,6 +104,8 @@ export const Login = () => {
 					}
 				});
 		}
+		if (nickname) nickname.value = '';
+		if (username) username.value = '';
 	};
 
 	if (loginOption === LoginOption.Unselected)
