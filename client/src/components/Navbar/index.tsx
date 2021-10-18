@@ -44,7 +44,6 @@ export const Navbar = ({ selectComponent, components }: NavbarProps) => {
 				name="open-navbar"
 				id="open-navbar"
 				ref={openNavbarBTRef}
-				defaultChecked
 			/>
 			<label htmlFor="open-navbar" className="open-navbar-bt">
 				menu
