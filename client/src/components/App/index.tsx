@@ -1,10 +1,37 @@
 import './App.scss';
-interface AppProps {}
+import { Game } from '../Game';
+import { Login } from '../Login';
+import { PanelProvider } from '../../providers/PanelProvider';
+import { Scoreboard } from '../Scoreboard';
+import { ClientProvider } from '../../providers/ClientProvider';
+import { Navbar } from '../Navbar';
 
-export const App = ({}: AppProps) => {
+const components = [
+	{
+		name: 'Game',
+		component: <Game />,
+		visibility: false,
+	},
+	{
+		name: 'Scoreboard',
+		component: <Scoreboard />,
+		visibility: false,
+	},
+	{
+		name: 'Login',
+		component: <Login />,
+		visibility: true,
+	},
+];
+
+export const App = () => {
 	return (
 		<div className="App-container">
-			<h3>Holu</h3>
+			<ClientProvider>
+				<PanelProvider components={components}>
+					<Navbar components={components} />
+				</PanelProvider>
+			</ClientProvider>
 		</div>
 	);
 };
