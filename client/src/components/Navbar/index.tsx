@@ -1,29 +1,22 @@
 import './Navbar.scss';
-import { Component } from '../Panel';
 import { Fragment, useRef } from 'react';
+import { Component, usePanel } from '../../providers/PanelProvider';
 import { useClient } from '../../providers/ClientProvider';
 
 interface NavbarProps {
-	selectComponent: React.Dispatch<React.SetStateAction<Component[]>>;
 	components: Component[];
 }
 
-export const Navbar = ({ selectComponent, components }: NavbarProps) => {
+export const Navbar = ({ components }: NavbarProps) => {
 	const openNavbarBTRef = useRef<HTMLInputElement>(null);
 	const logoutBTRef = useRef<HTMLButtonElement>(null);
 	const logoutOptionsRef = useRef<HTMLSpanElement>(null);
 
+	const { goToSection } = usePanel();
 	const { logged, logout } = useClient();
 
 	const handleSelect = (componentName: string) => {
-		selectComponent((prev) =>
-			prev.map(({ component, name }) => {
-				if (name === componentName) {
-					return { component, name, visibility: true };
-				}
-				return { component, name, visibility: false };
-			}),
-		);
+		goToSection(componentName);
 		const openNavbarBT = openNavbarBTRef.current as HTMLInputElement;
 		openNavbarBT.checked = false;
 	};
@@ -49,7 +42,7 @@ export const Navbar = ({ selectComponent, components }: NavbarProps) => {
 				menu
 			</label>
 			<div className="Navbar-container">
-				{components.map(({ name, visibility }) => {
+				{components.map(({ name }) => {
 					if (logged && name === 'Login')
 						return (
 							<Fragment key="Logout">
@@ -72,7 +65,6 @@ export const Navbar = ({ selectComponent, components }: NavbarProps) => {
 								type="radio"
 								name="component"
 								id={name}
-								checked={visibility}
 								onChange={() => {}}
 							/>
 							<label htmlFor={name} onClick={() => handleSelect(name)}>
