@@ -21,11 +21,18 @@ export const Panel = ({ value }: PanelProps) => {
 	useEffect(() => {
 		setComponentsVisibility((prev) => {
 			return prev.map(({ component, name, visibility }) => {
-				if (name === 'Login') {
-					visibility = !logged;
-				}
-				if (name === 'Scoreboard') {
-					visibility = logged;
+				if (logged) {
+					if (name === 'Scoreboard') {
+						visibility = true;
+					} else {
+						visibility = false;
+					}
+				} else {
+					if (name === 'Login') {
+						visibility = true;
+					} else {
+						visibility = false;
+					}
 				}
 				return { component, name, visibility };
 			});
