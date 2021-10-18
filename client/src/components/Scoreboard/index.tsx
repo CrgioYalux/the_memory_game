@@ -1,10 +1,13 @@
 import './Scoreboard.scss';
 import { useFetch } from '../../hooks/useFetch';
 import { Score, formatDayMonthYear } from './utils';
+import { useClient } from '../../providers/ClientProvider';
 
 interface ScoreboardProps {}
 
 export const Scoreboard = ({}: ScoreboardProps) => {
+	const { client } = useClient();
+
 	const {
 		data: scores,
 		loading,
@@ -45,7 +48,10 @@ export const Scoreboard = ({}: ScoreboardProps) => {
 			<tbody>
 				{scores.map((score) => {
 					return (
-						<tr key={score.id}>
+						<tr
+							key={score.id}
+							className={client?.id === score.id ? 'is_client' : ''}
+						>
 							<td>{score.player.nickname}</td>
 							<td>{score.game.points}</td>
 							<td>{score.game.time}</td>

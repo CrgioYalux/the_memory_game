@@ -51,6 +51,14 @@
 				border-bottom-right-radius: 9px;
 			}
 		}
+		&.is_client {
+			td {
+				color: vars.$primary-light;
+				&:first-child {
+					border-left: 2px solid currentColor;
+				}
+			}
+		}
 	}
 }
 
