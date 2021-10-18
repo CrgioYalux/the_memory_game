@@ -80,7 +80,8 @@ export const Login = () => {
 							setLoginState(LoginState.Failed_ExistingAccount);
 						} else if (error.response.status === 409) {
 							setLoginState(LoginState.Failed_RepeatedData);
-						} else if (error.response.status === 503) {
+						} else {
+							// error.response.status === 503
 							setLoginState(LoginState.Failed_NoService);
 						}
 					});
@@ -99,7 +100,8 @@ export const Login = () => {
 				.catch((error) => {
 					if (error.response.status === 404) {
 						setLoginState(LoginState.Failed_NonExistingAccount);
-					} else if (error.response.status === 503) {
+					} else {
+						// error.response.status === 503
 						setLoginState(LoginState.Failed_NoService);
 					}
 				});
