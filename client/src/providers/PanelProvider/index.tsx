@@ -11,20 +11,31 @@ export type Component = {
 interface PanelContextProps {
 	actualSection: string;
 	goToSection: (sectionName: string) => void;
+	goToBase: () => void;
 }
 
 const PanelContext = createContext<PanelContextProps>({
 	actualSection: '',
 	goToSection: () => {},
+	goToBase: () => {},
 });
 
 export const usePanel = () => useContext(PanelContext);
 interface PanelProviderProps {
 	components: Component[];
 	children: React.ReactNode;
+	baseComponent: {
+		ifLogged: string;
+		ifNotLogged: string;
+	};
 }
 
-export const PanelProvider = ({ components, children }: PanelProviderProps) => {
+export const PanelProvider = ({
+	components,
+	baseComponent,
+	children,
+}: PanelProviderProps) => {
+	const [base, setBase] = useState<string>(baseComponent.ifNotLogged);
 	const { logged } = useClient();
 	const [componentsVisibility, setComponentsVisibility] =
 		useState<Component[]>(components);
@@ -39,23 +50,28 @@ export const PanelProvider = ({ components, children }: PanelProviderProps) => {
 		});
 	};
 
+	const goToBase = () => {
+		goToSection(base);
+	};
+
 	useEffect(() => {
-		setComponentsVisibility((prev) => {
-			return prev.map(({ component, name, visibility }) => {
-				if (logged) goToSection('Scoreboard');
-				else goToSection('Login');
-				return { component, name, visibility };
-			});
-		});
+		if (logged) {
+			goToSection(baseComponent.ifLogged);
+			setBase(baseComponent.ifLogged);
+		} else {
+			goToSection(baseComponent.ifNotLogged);
+			setBase(baseComponent.ifNotLogged);
+		}
 	}, [logged]);
 
-	const actualSection = componentsVisibility.reduce<string>((acc, arr) => {
+	const actualSection = componentsVisibility.reduce<string>((_, arr) => {
 		if (arr.visibility) return arr.name;
 		else return '';
 	}, '');
 
 	const value = {
 		goToSection,
+		goToBase,
 		actualSection,
 	};
 
