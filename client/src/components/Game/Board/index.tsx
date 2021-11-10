@@ -1,6 +1,6 @@
 import './Board.scss';
 import { Fragment } from 'react';
-import { BoardPiece } from '../../../reducer/BoardReducer';
+import { BoardPiece } from '../utils';
 
 interface BoardProps {
 	board: BoardPiece[][];
