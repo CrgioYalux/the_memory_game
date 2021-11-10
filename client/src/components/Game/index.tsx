@@ -1,5 +1,4 @@
 import './Game.scss';
-
 import { useState, useEffect } from 'react';
 import { useTimer } from '../../hooks/useTime';
 import { Time, formatTime } from '../../hooks/useTime/time';
@@ -31,7 +30,7 @@ export const Game = ({ difficulty, time }: GameProps) => {
 	const [pairs, setPairs] = useState<BoardPiece[][]>([]);
 	const [gameState, setGameState] = useState<GameStates>(GameStates.Playing);
 	const [cssBasedOnGameState, setCssBasedOnGameState] = useState<string>('');
-	const { isTimerRunning, timer, addTimeOnRunning, stopTimer } = useTimer(
+	const { isTimerRunning, timer, addTimeOnRunning } = useTimer(
 		typeof time !== 'string'
 			? {
 					to: time,
@@ -92,15 +91,16 @@ export const Game = ({ difficulty, time }: GameProps) => {
 		setCompleted([]);
 		setBoard(createBoard(difficulty));
 		setBoardVisibilty(true);
+		let keepRunning;
 		if (gameState === GameStates.Lose) {
-			addTimeOnRunning(difficulty);
+			keepRunning = addTimeOnRunning(difficulty);
 			setLosses(losses + 1);
 		} else if (gameState === GameStates.Win) {
-			addTimeOnRunning(difficulty * -1);
+			keepRunning = addTimeOnRunning(difficulty * -1);
 			setWins(wins + 1);
 		}
 		setGameState(GameStates.Playing);
-		hideBoardAfterTheTime(difficulty);
+		keepRunning && hideBoardAfterTheTime(difficulty);
 	};
 
 	useEffect(() => {
@@ -111,16 +111,16 @@ export const Game = ({ difficulty, time }: GameProps) => {
 
 	useEffect(() => {
 		if (
-			isTimerRunning !== false &&
-			typeof time === 'object' &&
-			timer.minutes >= time.minutes &&
-			timer.seconds >= time.seconds
+			isTimerRunning === false ||
+			(typeof time === 'object' &&
+				timer.minutes >= time.minutes &&
+				timer.seconds >= time.seconds)
 		) {
+			setBoardVisibilty(false);
+			switchAllPiecesVisibility(true);
 			if (wins > losses) setGameState(GameStates.Win);
 			if (wins < losses) setGameState(GameStates.Lose);
 			if (wins === losses) setGameState(GameStates.Tie);
-			switchAllPiecesVisibility(true);
-			stopTimer();
 		}
 	}, [timer]);
 
@@ -190,10 +190,14 @@ export const Game = ({ difficulty, time }: GameProps) => {
 		<div className={`Game-container ${cssBasedOnGameState}`}>
 			<div>
 				<span className="timer">
-					<strong>
-						{typeof time === 'object' &&
-							formatTime(subtractTwoTimes(timer, time))}
-					</strong>
+					{gameState === GameStates.Playing ? (
+						<strong>
+							{typeof time === 'object' &&
+								formatTime(subtractTwoTimes(timer, time))}
+						</strong>
+					) : (
+						<h3>{gameState.toLowerCase()}</h3>
+					)}
 					{cssBasedOnGameState !== '' && (
 						<small className={`additional-time ${cssBasedOnGameState}`}>
 							{cssBasedOnGameState === '_win' && `+${difficulty}s`}
