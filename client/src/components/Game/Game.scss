@@ -1,0 +1,124 @@
+@use '../../sass/vars';
+@import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+
+$win: hsl(120, 50, 50);
+$lose: hsl(0, 50, 50);
+
+@keyframes pulse {
+	to {
+		box-shadow: 0 0 0 10px rgba(0, 0, 0, 0.05);
+		visibility: hidden;
+	}
+}
+
+.Game-container {
+	min-height: 100vh;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 10px;
+	& > div:first-child {
+		width: 100%;
+		display: grid;
+		place-items: center;
+		gap: 10px;
+	}
+	& > div:last-child {
+		width: 90vw;
+		max-width: calc(425px - 10vw);
+		border: 2px solid transparent;
+		box-sizing: content-box;
+		padding: 2px;
+	}
+	&._win > div:last-child {
+		animation: pulse 0.4s;
+		box-shadow: 0 0 0 0 $win;
+	}
+	&._lose > div:last-child {
+		animation: pulse 0.4s;
+		box-shadow: 0 0 0 0 $lose;
+	}
+	.timer {
+		position: relative;
+		font-size: clamp(1.8rem, 5vw, 4rem);
+		strong {
+			font-family: 'Lato', sans-serif;
+			font-size: 1em;
+			color: white;
+		}
+		.additional-time {
+			font-size: 0.8em;
+			font-family: sans-serif;
+			position: absolute;
+			top: -50%;
+			right: -50%;
+			&._win {
+				color: $win;
+			}
+			&._lose {
+				color: $lose;
+			}
+		}
+	}
+	.marker {
+		width: 100%;
+		max-width: 300px;
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		gap: 5px;
+		font-size: clamp(1.2rem, 3.5vw, 1.4rem);
+		strong {
+			flex: 0 0 40%;
+			padding: 0.4em 0;
+			border-radius: 9px;
+			font-family: 'Montserrat', sans-serif;
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+			span {
+				font-size: 1em;
+				text-align: center;
+				&:first-child {
+					flex: 1 0 auto;
+				}
+				&:last-child {
+					flex: 0 0 30%;
+				}
+			}
+			&.wins {
+				background-color: $win;
+				color: white;
+			}
+			&.losses {
+				background-color: $lose;
+				color: white;
+			}
+		}
+	}
+}
+
+@media (min-width: 768px) {
+	.Game-container {
+		flex-direction: row;
+		gap: 0;
+		& > div:first-child {
+			max-width: 30vw;
+		}
+		& > div:last-child {
+			width: max-content;
+			max-width: none;
+			height: 90vh;
+		}
+		.marker {
+			flex-direction: column;
+			align-items: center;
+			strong {
+				width: 80%;
+			}
+		}
+	}
+}
