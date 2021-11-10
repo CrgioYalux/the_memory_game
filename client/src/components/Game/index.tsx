@@ -196,7 +196,7 @@ export const Game = ({ difficulty, time }: GameProps) => {
 								formatTime(subtractTwoTimes(timer, time))}
 						</strong>
 					) : (
-						<h3>{gameState.toLowerCase()}</h3>
+						<strong>{gameState.toLowerCase()}</strong>
 					)}
 					{cssBasedOnGameState !== '' && (
 						<small className={`additional-time ${cssBasedOnGameState}`}>

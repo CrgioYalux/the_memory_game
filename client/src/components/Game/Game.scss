@@ -12,6 +12,28 @@ $lose: hsl(0, 50, 50);
 	}
 }
 
+@keyframes goUp {
+	from {
+		bottom: 0;
+		opacity: 1;
+	}
+	to {
+		bottom: 8px;
+		opacity: 0;
+	}
+}
+
+@keyframes goDown {
+	from {
+		top: 0;
+		opacity: 1;
+	}
+	to {
+		top: 8px;
+		opacity: 0;
+	}
+}
+
 .Game-container {
 	min-height: 100vh;
 	width: 100%;
@@ -53,13 +75,14 @@ $lose: hsl(0, 50, 50);
 			font-size: 0.8em;
 			font-family: sans-serif;
 			position: absolute;
-			top: -50%;
 			right: -50%;
 			&._win {
 				color: $win;
+				animation: goUp 0.4s forwards;
 			}
 			&._lose {
 				color: $lose;
+				animation: goDown 0.4s forwards;
 			}
 		}
 	}
