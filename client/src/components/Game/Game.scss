@@ -13,6 +13,7 @@ $lose: hsl(0, 50, 50);
 }
 
 .Game-container {
+	min-height: 100vh;
 	width: 100%;
 	display: flex;
 	flex-direction: column;
@@ -108,7 +109,9 @@ $lose: hsl(0, 50, 50);
 			max-width: 30vw;
 		}
 		& > div:last-child {
-			max-width: 600px;
+			width: max-content;
+			max-width: none;
+			height: 90vh;
 		}
 		.marker {
 			flex-direction: column;
