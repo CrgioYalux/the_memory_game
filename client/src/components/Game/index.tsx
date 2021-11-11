@@ -1,21 +1,15 @@
 import './Game.scss';
 import { useState, useEffect } from 'react';
 import { useTimer } from '../../hooks/useTime';
-import { Time, formatTime } from '../../hooks/useTime/time';
+import { Time } from '../../hooks/useTime/time';
 import { Board } from './Board';
 import { createBoard, BoardPiece } from './utils';
-import { subtractTwoTimes } from '../../hooks/useTime/time';
+import { GameStates } from './utils';
+import { Info } from './Info';
 
 interface GameProps {
 	difficulty: number;
 	time: Time | string;
-}
-
-enum GameStates {
-	Playing = 'PLAYING',
-	Lose = 'LOSE',
-	Win = 'WIN',
-	Tie = 'TIE',
 }
 
 export const Game = ({ difficulty, time }: GameProps) => {
@@ -30,7 +24,7 @@ export const Game = ({ difficulty, time }: GameProps) => {
 	const [pairs, setPairs] = useState<BoardPiece[][]>([]);
 	const [gameState, setGameState] = useState<GameStates>(GameStates.Playing);
 	const [cssBasedOnGameState, setCssBasedOnGameState] = useState<string>('');
-	const { isTimerRunning, timer, addTimeOnRunning } = useTimer(
+	const { timer, isTimerRunning, addTimeOnRunning, stopTimer } = useTimer(
 		typeof time !== 'string'
 			? {
 					to: time,
@@ -91,17 +85,25 @@ export const Game = ({ difficulty, time }: GameProps) => {
 		setCompleted([]);
 		setBoard(createBoard(difficulty));
 		setBoardVisibilty(true);
-		let keepRunning;
+		let keepRunning = true;
 		if (gameState === GameStates.Lose) {
-			keepRunning = addTimeOnRunning(difficulty);
+			if (typeof time !== 'string') {
+				keepRunning = addTimeOnRunning(difficulty);
+			}
 			setLosses(losses + 1);
 		} else if (gameState === GameStates.Win) {
-			keepRunning = addTimeOnRunning(difficulty * -1);
+			if (typeof time !== 'string') {
+				keepRunning = addTimeOnRunning(difficulty * -1);
+			}
 			setWins(wins + 1);
 		}
 		setGameState(GameStates.Playing);
 		keepRunning && hideBoardAfterTheTime(difficulty);
 	};
+
+	useEffect(() => {
+		hideBoardAfterTheTime(difficulty);
+	}, []);
 
 	useEffect(() => {
 		if (completed.length === (difficulty * difficulty - 1) / 2) {
@@ -110,23 +112,14 @@ export const Game = ({ difficulty, time }: GameProps) => {
 	}, [completed]);
 
 	useEffect(() => {
-		if (
-			isTimerRunning === false ||
-			(typeof time === 'object' &&
-				timer.minutes >= time.minutes &&
-				timer.seconds >= time.seconds)
-		) {
+		if (isTimerRunning === false) {
 			setBoardVisibilty(false);
 			switchAllPiecesVisibility(true);
 			if (wins > losses) setGameState(GameStates.Win);
 			if (wins < losses) setGameState(GameStates.Lose);
 			if (wins === losses) setGameState(GameStates.Tie);
 		}
-	}, [timer]);
-
-	useEffect(() => {
-		hideBoardAfterTheTime(difficulty);
-	}, []);
+	}, [isTimerRunning]);
 
 	useEffect(() => {
 		const lose =
@@ -188,39 +181,21 @@ export const Game = ({ difficulty, time }: GameProps) => {
 
 	return (
 		<div className={`Game-container ${cssBasedOnGameState}`}>
-			<div>
-				<span className="timer">
-					{gameState === GameStates.Playing ? (
-						<strong>
-							{typeof time === 'object' &&
-								formatTime(subtractTwoTimes(timer, time))}
-						</strong>
-					) : (
-						<strong>{gameState.toLowerCase()}</strong>
-					)}
-					{cssBasedOnGameState !== '' && (
-						<small className={`additional-time ${cssBasedOnGameState}`}>
-							{cssBasedOnGameState === '_win' && `+${difficulty}s`}
-							{cssBasedOnGameState === '_lose' && `-${difficulty}s`}
-						</small>
-					)}
-				</span>
-				<span className="marker">
-					<strong className="wins">
-						<span>wins</span>
-						<span>{wins}</span>
-					</strong>
-					<strong className="losses">
-						<span>losses</span>
-						<span>{losses}</span>
-					</strong>
-				</span>
-			</div>
+			<Info
+				wins={wins}
+				time={time}
+				timer={timer}
+				losses={losses}
+				stopTimer={stopTimer}
+				gameState={gameState}
+				difficulty={difficulty}
+				cssBasedOnGameState={cssBasedOnGameState}
+			/>
 			<Board
-				completed={completed}
 				board={board}
-				boardVisibility={boardVisibility}
 				select={select}
+				completed={completed}
+				boardVisibility={boardVisibility}
 			/>
 		</div>
 	);

@@ -1,0 +1,92 @@
+@use '../../../sass/vars';
+
+.Info-container {
+	width: 100%;
+	display: grid;
+	place-items: center;
+	gap: 10px;
+	.timer {
+		position: relative;
+		font-size: clamp(1.8rem, 5vw, 4rem);
+		border: 5px solid vars.$primary-lighter;
+		user-select: none;
+		strong {
+			font-family: 'Lato', sans-serif;
+			font-size: 1em;
+			padding: 0 0.2em;
+			color: vars.$primary-lighter;
+		}
+		.additional-time {
+			font-size: 0.8em;
+			font-family: sans-serif;
+			position: absolute;
+			right: -50%;
+			&._win {
+				color: vars.$win;
+				animation: goUp 0.4s forwards;
+			}
+			&._lose {
+				color: vars.$lose;
+				animation: goDown 0.4s forwards;
+			}
+		}
+		.custom-time {
+			font-size: 1em;
+			width: 100%;
+			height: 100%;
+			background-color: transparent;
+			border: 0;
+			outline: 0;
+			cursor: pointer;
+		}
+	}
+	.marker {
+		width: 100%;
+		max-width: 300px;
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		gap: 5px;
+		font-size: clamp(1.2rem, 3.5vw, 1.4rem);
+		strong {
+			flex: 0 0 40%;
+			padding: 0.4em 0;
+			border-radius: 9px;
+			font-family: 'Montserrat', sans-serif;
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+			span {
+				font-size: 1em;
+				text-align: center;
+				&:first-child {
+					flex: 1 0 auto;
+				}
+				&:last-child {
+					flex: 0 0 30%;
+				}
+			}
+			&.wins {
+				background-color: vars.$win;
+				color: white;
+			}
+			&.losses {
+				background-color: vars.$lose;
+				color: white;
+			}
+		}
+	}
+}
+
+@media (min-width: 768px) {
+	.Info-container {
+		max-width: 30vw;
+		.marker {
+			flex-direction: column;
+			align-items: center;
+			strong {
+				width: 80%;
+			}
+		}
+	}
+}

@@ -1,5 +1,12 @@
 import { arrayOfLetters, shuffleArray } from '../../helpers';
 
+export enum GameStates {
+	Playing = 'PLAYING',
+	Lose = 'LOSE',
+	Win = 'WIN',
+	Tie = 'TIE',
+}
+
 export type BoardPiece = {
 	value: {
 		label: string;
