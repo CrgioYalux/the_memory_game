@@ -1,7 +1,11 @@
 import './Game.scss';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTimer } from '../../hooks/useTime';
-import { Time } from '../../hooks/useTime/time';
+import {
+	subtractTwoTimes,
+	Time,
+	timeToSeconds,
+} from '../../hooks/useTime/time';
 import { Board } from './Board';
 import { createBoard, BoardPiece } from './utils';
 import { GameStates } from './utils';
@@ -13,27 +17,29 @@ interface GameProps {
 }
 
 export const Game = ({ difficulty, time }: GameProps) => {
-	const [wins, setWins] = useState<number>(0);
-	const [losses, setLosses] = useState<number>(0);
-	const [boardVisibility, setBoardVisibilty] = useState<boolean>(true);
 	const [board, setBoard] = useState<BoardPiece[][]>(() =>
 		createBoard(difficulty),
 	);
+	const [wins, setWins] = useState<number>(0);
+	const [losses, setLosses] = useState<number>(0);
+	const [boardVisibility, setBoardVisibilty] = useState<boolean>(true);
 	const [completed, setCompleted] = useState<string[]>([]);
 	const [selected, setSelected] = useState<BoardPiece[]>([]);
 	const [pairs, setPairs] = useState<BoardPiece[][]>([]);
-	const [gameState, setGameState] = useState<GameStates>(GameStates.Playing);
+	const [gameState, setGameState] = useState<GameStates>(GameStates.NotPlaying);
 	const [cssBasedOnGameState, setCssBasedOnGameState] = useState<string>('');
-	const { timer, isTimerRunning, addTimeOnRunning, stopTimer } = useTimer(
-		typeof time !== 'string'
-			? {
-					to: time,
-					autostart: true,
-			  }
-			: {
-					autostart: true,
-			  },
-	);
+	const { timer, isTimerRunning, addTimeOnRunning, stopTimer, startTimer } =
+		useTimer(
+			typeof time !== 'string'
+				? {
+						to: time,
+						autostart: false,
+				  }
+				: {
+						autostart: false,
+				  },
+		);
+	const hideAfterSelectionRef = useRef<NodeJS.Timeout>(setTimeout(() => {}, 0));
 
 	const select = (thisPiece: BoardPiece) => {
 		setSelected((prev) => {
@@ -73,10 +79,13 @@ export const Game = ({ difficulty, time }: GameProps) => {
 	};
 
 	const hideBoardAfterTheTime = (timeInSeconds: number) => {
-		const hide = setTimeout(() => {
-			setBoardVisibilty(false);
-		}, 1000 * timeInSeconds);
-		return () => clearTimeout(hide);
+		return new Promise((resolve, _) => {
+			let hide = setTimeout(() => {
+				setBoardVisibilty(false);
+				resolve(true);
+			}, 1000 * timeInSeconds);
+			return () => clearTimeout(hide);
+		});
 	};
 
 	const restartRound = (gameState: GameStates) => {
@@ -93,7 +102,7 @@ export const Game = ({ difficulty, time }: GameProps) => {
 			setLosses(losses + 1);
 		} else if (gameState === GameStates.Win) {
 			if (typeof time !== 'string') {
-				keepRunning = addTimeOnRunning(difficulty * -1);
+				keepRunning = addTimeOnRunning((difficulty + difficulty) * -1);
 			}
 			setWins(wins + 1);
 		}
@@ -102,7 +111,10 @@ export const Game = ({ difficulty, time }: GameProps) => {
 	};
 
 	useEffect(() => {
-		hideBoardAfterTheTime(difficulty);
+		hideBoardAfterTheTime(difficulty).then(() => {
+			startTimer();
+			setGameState(GameStates.Playing);
+		});
 	}, []);
 
 	useEffect(() => {
@@ -112,7 +124,8 @@ export const Game = ({ difficulty, time }: GameProps) => {
 	}, [completed]);
 
 	useEffect(() => {
-		if (isTimerRunning === false) {
+		if (isTimerRunning === false && gameState === GameStates.Playing) {
+			clearTimeout(hideAfterSelectionRef.current);
 			setBoardVisibilty(false);
 			switchAllPiecesVisibility(true);
 			if (wins > losses) setGameState(GameStates.Win);
@@ -149,13 +162,13 @@ export const Game = ({ difficulty, time }: GameProps) => {
 	}, [pairs]);
 
 	useEffect(() => {
-		if (selected.length !== 0) {
-			const hide = setTimeout(() => {
+		if (selected.length !== 0 && gameState === GameStates.Playing) {
+			hideAfterSelectionRef.current = setTimeout(() => {
 				switchAllPiecesVisibility(false);
 				setSelected([]);
 				setPairs([]);
 			}, 1000);
-			return () => clearTimeout(hide);
+			return () => clearTimeout(hideAfterSelectionRef.current);
 		}
 	}, [selected]);
 

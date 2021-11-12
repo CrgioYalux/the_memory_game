@@ -5,7 +5,6 @@ import {
 	subtractTwoTimes,
 } from '../../../hooks/useTime/time';
 import { GameStates } from '../utils';
-import { useState, useEffect } from 'react';
 
 interface InfoProps {
 	gameState: GameStates;
@@ -32,13 +31,18 @@ export const Info = ({
 		<div className="Info-container">
 			<section className="timer">
 				{typeof time !== 'string' ? (
-					gameState === GameStates.Playing ? (
-						<strong>
+					gameState === GameStates.Playing ||
+					gameState === GameStates.NotPlaying ? (
+						<strong
+							className={
+								gameState === GameStates.Playing ? '_playing' : '_not_playing'
+							}
+						>
 							{typeof time === 'object' &&
 								formatTime(subtractTwoTimes(timer, time))}
 						</strong>
 					) : (
-						<strong>{gameState.toLowerCase()}</strong>
+						<strong className="game-state">{gameState.toLowerCase()}</strong>
 					)
 				) : (
 					<button
@@ -46,12 +50,18 @@ export const Info = ({
 						className="custom-time"
 						title="Click here for ending the game"
 					>
-						<strong>{formatTime(timer)}</strong>
+						<strong
+							className={
+								gameState === GameStates.Playing ? '_playing' : '_not_playing'
+							}
+						>
+							{formatTime(timer)}
+						</strong>
 					</button>
 				)}
 				{typeof time !== 'string' && cssBasedOnGameState !== '' && (
 					<small className={`additional-time ${cssBasedOnGameState}`}>
-						{cssBasedOnGameState === '_win' && `+${difficulty}s`}
+						{cssBasedOnGameState === '_win' && `+${difficulty + difficulty}s`}
 						{cssBasedOnGameState === '_lose' && `-${difficulty}s`}
 					</small>
 				)}

@@ -1,6 +1,7 @@
 import { arrayOfLetters, shuffleArray } from '../../helpers';
 
 export enum GameStates {
+	NotPlaying = 'NOTPLAYING',
 	Playing = 'PLAYING',
 	Lose = 'LOSE',
 	Win = 'WIN',
