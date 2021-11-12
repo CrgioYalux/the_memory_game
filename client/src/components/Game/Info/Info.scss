@@ -8,13 +8,24 @@
 	.timer {
 		position: relative;
 		font-size: clamp(1.8rem, 5vw, 4rem);
-		border: 5px solid vars.$primary-lighter;
 		user-select: none;
 		strong {
+			border: 5px solid vars.$primary-lighter;
 			font-family: 'Lato', sans-serif;
 			font-size: 1em;
 			padding: 0 0.2em;
 			color: vars.$primary-lighter;
+			&._playing {
+				opacity: 1;
+				transition: opacity 0.4s;
+			}
+			&._not_playing {
+				opacity: 0.6;
+				transition: opacity 0.4s;
+			}
+			&.game-state {
+				border: none;
+			}
 		}
 		.additional-time {
 			font-size: 0.8em;
