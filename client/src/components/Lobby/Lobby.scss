@@ -1,0 +1,190 @@
+@use '../../sass/vars';
+@import url('https://fonts.googleapis.com/css2?family=Oswald&display=swap');
+
+.Lobby-container {
+	input {
+		display: none;
+	}
+	min-height: 100vh;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	&._not_logged {
+		width: 90vw;
+		max-width: 600px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 10px;
+		font-family: sans-serif;
+
+		span {
+			font-size: 1.3rem;
+			color: vars.$primary-light;
+			text-align: justify;
+			line-height: 1.2;
+		}
+
+		button {
+			position: relative;
+			top: 10px;
+
+			font-size: 1.2rem;
+			padding: 0.3em 0.6em;
+			font-family: sans-serif;
+			font-weight: 600;
+			text-transform: lowercase;
+			color: vars.$primary-darkest;
+
+			border: 2px solid currentColor;
+			border-radius: 16px;
+
+			background-color: transparent;
+
+			cursor: pointer;
+
+			&:focus {
+				outline: 5px solid vars.$secondary-lightest;
+			}
+		}
+	}
+	&._logged {
+		form {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 20px;
+
+			.game-options {
+				background-color: hsla(hue(vars.$primary), 50, 50, 0.4);
+				width: 80vw;
+				max-width: 350px;
+				border-radius: 5px;
+				font-family: 'Oswald', sans-serif;
+				padding: 5px;
+				section {
+					width: 100%;
+					display: flex;
+					flex-direction: column;
+					justify-content: center;
+					align-items: center;
+					h3 {
+						font-size: clamp(1.4rem, 4vw, 3rem);
+						color: vars.$primary-light;
+						letter-spacing: 2px;
+					}
+					.time-options,
+					.difficulty-options {
+						div {
+							color: vars.$primary;
+							border: 2px dashed currentColor;
+							border-radius: 5px;
+						}
+						label {
+							width: 100%;
+							height: 100%;
+							display: grid;
+							place-items: center;
+							font-size: clamp(1.2rem, 4vw, 3rem);
+							text-shadow: 0 0.1em 0 vars.$secondary-lightest;
+							font-weight: 800;
+							letter-spacing: 2px;
+							cursor: pointer;
+							user-select: none;
+							border-radius: 5px;
+						}
+						input:checked + label {
+							background-color: vars.$secondary-lightest;
+						}
+					}
+
+					.time-options {
+						display: grid;
+						grid-template-columns: 1fr 1fr 1fr;
+						grid-template-rows: 1fr 1fr;
+						gap: 5px;
+						grid-template-areas:
+							'. . .'
+							'A A A';
+						width: 100%;
+						height: 100%;
+
+						place-items: center;
+						.time-option {
+							width: 100%;
+							height: 100%;
+							&._normal {
+								aspect-ratio: 1;
+							}
+							&._custom {
+								grid-area: A;
+							}
+						}
+					}
+
+					.difficulty-options {
+						width: 100%;
+						display: flex;
+						flex-direction: row;
+						flex-wrap: wrap;
+						gap: 5px;
+						div {
+							flex: 1 1 auto;
+							aspect-ratio: 1;
+						}
+					}
+				}
+			}
+			button {
+				background-color: transparent;
+				color: vars.$primary-dark;
+				font-size: clamp(1.2rem, 4vw, 2rem);
+				font-weight: 800;
+				text-transform: uppercase;
+				padding: 0.2em 0.8em;
+				border-radius: 5px;
+				border: 0;
+				border: 4px solid currentColor;
+				cursor: pointer;
+				text-shadow: 0 4px 0 vars.$primary-darkest;
+				box-shadow: 0 4px 0 0 vars.$primary-darkest,
+					inset 0 4px 0 0 darken($color: vars.$primary-darkest, $amount: 5);
+			}
+		}
+	}
+}
+
+@media (min-width: 480px) {
+	.Lobby-container {
+		&._logged {
+			form {
+				.game-options {
+					max-width: max-content;
+					display: flex;
+					flex-direction: row;
+					gap: 5px;
+					padding: 5px;
+					section {
+						justify-content: flex-start;
+						.time-options {
+							label {
+								padding: 10px;
+							}
+						}
+						.difficulty-options {
+							padding: 0;
+							gap: 5px;
+							height: 100%;
+							div {
+								width: 100%;
+								aspect-ratio: 32/9;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
