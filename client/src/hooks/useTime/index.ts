@@ -48,7 +48,6 @@ export const useTimer = ({
 	};
 
 	const restartCounting = (): void => {
-		stopCounting();
 		setSeconds(0);
 		setMinutes(0);
 	};
