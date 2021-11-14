@@ -5,21 +5,14 @@ import { Document } from 'mongoose';
 export const getAllScores = (request: Request, response: Response) => {
 	ScoreModel.find({})
 		.then((results) => {
-			response.status(200).json(
-				results.map((result) => {
-					return {
-						player: {
-							nickname: result.player.nickname,
-						},
-						game: {
-							points: result.game.points,
-							time: result.game.time,
-						},
-						id: result.id,
-						updatedAt: result.updatedAt,
-					};
-				}),
-			);
+			response
+				.status(200)
+				.json(
+					results.filter(
+						(result) =>
+							result.game.difficulty !== 0 && result.game.time !== '--:--:--',
+					),
+				);
 		})
 		.catch((error) => {
 			response.status(503).send({ error });
@@ -54,9 +47,14 @@ export const updateScore = (request: Request, response: Response) => {
 		};
 
 		const score = request.body as {
+			difficulty?: number;
 			points?: number;
 			time?: string;
 		};
+
+		if (score.difficulty) {
+			foundUser.game.difficulty = score.difficulty;
+		}
 		if (score.points) {
 			foundUser.game.points = score.points;
 		}

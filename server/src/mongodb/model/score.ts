@@ -6,6 +6,7 @@ export interface Score {
 		nickname: string;
 	};
 	game: {
+		difficulty: number;
 		points: number;
 		time: string;
 	};
@@ -24,6 +25,10 @@ const schema = new Schema<Score>({
 		},
 	},
 	game: {
+		difficulty: {
+			type: Number,
+			required: true,
+		},
 		points: {
 			type: Number,
 			required: true,

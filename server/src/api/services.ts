@@ -15,6 +15,7 @@ export const signUp = (request: Request, response: Response) => {
 					nickname: data.nickname,
 				},
 				game: {
+					difficulty: 0,
 					points: 0,
 					time: '--:--:--',
 				},
