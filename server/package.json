@@ -4,9 +4,9 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"start": "ts-node ./src/index.ts",
+		"start": "node ./dist/src/index.js",
 		"dev": "nodemon --config ./nodemon.json ./src/index.ts",
-		"build": "tsc"
+		"postinstall": "tsc"
 	},
 	"keywords": [],
 	"license": "MIT",
