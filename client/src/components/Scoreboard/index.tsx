@@ -40,6 +40,7 @@ export const Scoreboard = ({}: ScoreboardProps) => {
 			<thead>
 				<tr>
 					<th>Nickname</th>
+					<th>Difficulty</th>
 					<th>Points</th>
 					<th>Time</th>
 					<th>Last time updated</th>
@@ -53,6 +54,7 @@ export const Scoreboard = ({}: ScoreboardProps) => {
 							className={client?.id === score.id ? 'is_client' : ''}
 						>
 							<td>{score.player.nickname}</td>
+							<td>{score.game.difficulty}</td>
 							<td>{score.game.points}</td>
 							<td>{score.game.time}</td>
 							<td>{formatDayMonthYear(score.updatedAt)}</td>

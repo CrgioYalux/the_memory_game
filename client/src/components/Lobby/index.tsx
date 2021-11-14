@@ -1,10 +1,12 @@
 import './Lobby.scss';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { usePanel } from '../../providers/PanelProvider';
 import { useClient } from '../../providers/ClientProvider';
 import { formatTime } from '../../hooks/useTime/time';
 import { Game } from '../Game';
 import { Time } from '../../hooks/useTime/time';
+import { GameResult } from '../Game/utils';
+import { sendGameResults } from './utils';
 
 interface GameProps {}
 
@@ -24,17 +26,37 @@ export const Lobby = ({}: GameProps) => {
 		difficultyOptions[0].difficulty,
 	);
 	const [time, setTime] = useState<Time | string>(timeOptions[0]);
-	const [playing, setPlaying] = useState<boolean>(false);
+	const [isPlaying, setIsPlaying] = useState<boolean>(false);
 	const { goToBase } = usePanel();
-	const { logged } = useClient();
+	const { logged, client } = useClient();
+	const [gameResults, setGameResults] = useState<GameResult | null>(null);
+
+	useEffect(() => {
+		if (gameResults && client) {
+			console.log('renders');
+			sendGameResults({
+				url: '../api/scores',
+				username: client.player.username,
+				points: gameResults.wins,
+				time: gameResults.time,
+				difficulty: gameResults.difficulty,
+			});
+		}
+	}, [gameResults]);
 
 	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		setPlaying(true);
+		setIsPlaying(true);
 	};
 
-	if (playing) {
-		return <Game difficulty={difficulty} time={time} />;
+	if (isPlaying) {
+		return (
+			<Game
+				difficulty={difficulty}
+				time={time}
+				setGameResults={setGameResults}
+			/>
+		);
 	}
 
 	if (!logged) {

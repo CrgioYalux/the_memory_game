@@ -1,4 +1,5 @@
 import { arrayOfLetters, shuffleArray } from '../../helpers';
+import { Time } from '../../hooks/useTime/time';
 
 export enum GameStates {
 	NotPlaying = 'NOTPLAYING',
@@ -7,6 +8,13 @@ export enum GameStates {
 	Win = 'WIN',
 	Tie = 'TIE',
 }
+
+export type GameResult = {
+	result: GameStates;
+	time: string;
+	wins: number;
+	difficulty: number;
+};
 
 export type BoardPiece = {
 	value: {

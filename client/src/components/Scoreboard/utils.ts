@@ -5,6 +5,7 @@ export type Score = {
 	game: {
 		points: number;
 		time: string;
+		difficulty: number;
 	};
 	id: string;
 	updatedAt: Date;

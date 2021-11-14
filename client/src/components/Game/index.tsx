@@ -1,22 +1,20 @@
 import './Game.scss';
 import { useState, useEffect, useRef } from 'react';
 import { useTimer } from '../../hooks/useTime';
-import {
-	subtractTwoTimes,
-	Time,
-	timeToSeconds,
-} from '../../hooks/useTime/time';
+import { Time } from '../../hooks/useTime/time';
 import { Board } from './Board';
 import { createBoard, BoardPiece } from './utils';
 import { GameStates } from './utils';
 import { Info } from './Info';
-
+import { GameResult } from './utils';
+import { formatTime } from '../../hooks/useTime/time';
 interface GameProps {
 	difficulty: number;
 	time: Time | string;
+	setGameResults: React.Dispatch<React.SetStateAction<GameResult | null>>;
 }
 
-export const Game = ({ difficulty, time }: GameProps) => {
+export const Game = ({ difficulty, time, setGameResults }: GameProps) => {
 	const [board, setBoard] = useState<BoardPiece[][]>(() =>
 		createBoard(difficulty),
 	);
@@ -128,9 +126,28 @@ export const Game = ({ difficulty, time }: GameProps) => {
 			clearTimeout(hideAfterSelectionRef.current);
 			setBoardVisibilty(false);
 			switchAllPiecesVisibility(true);
-			if (wins > losses) setGameState(GameStates.Win);
-			if (wins < losses) setGameState(GameStates.Lose);
-			if (wins === losses) setGameState(GameStates.Tie);
+			let result;
+			if (wins > losses) {
+				result = GameStates.Win;
+				setGameState(GameStates.Win);
+			}
+			if (wins < losses) {
+				result = GameStates.Lose;
+				setGameState(GameStates.Lose);
+			}
+			if (wins === losses) {
+				result = GameStates.Tie;
+				setGameState(GameStates.Tie);
+			}
+			setGameResults({
+				result: result as GameStates,
+				wins: wins - losses,
+				time:
+					typeof time === 'string'
+						? `${formatTime(timer)} (custom)`
+						: formatTime(time),
+				difficulty,
+			});
 		}
 	}, [isTimerRunning]);
 
