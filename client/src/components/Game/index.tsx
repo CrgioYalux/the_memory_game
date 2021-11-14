@@ -125,14 +125,16 @@ export const Game = ({
 	};
 
 	const restartGame = () => {
+		setGameState(GameStates.NotPlaying);
 		setSelected([]);
 		setPairs([]);
 		setCompleted([]);
 		setWins(0);
 		setLosses(0);
-		setGameState(GameStates.NotPlaying);
 		stopTimer();
 		restartTimer();
+		setBoardVisibilty(true);
+		switchAllPiecesVisibility(false);
 		hideBoardAfterTheTime(difficulty).then(() => {
 			startTimer();
 			setGameState(GameStates.Playing);
