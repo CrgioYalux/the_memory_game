@@ -39,6 +39,19 @@
 	justify-content: center;
 	align-items: center;
 	gap: 10px;
+	& > div:first-child {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 10px;
+		& > div:first-child {
+			order: 1;
+		}
+		& > div:last-child {
+			order: 0;
+		}
+	}
 	& > div:last-child {
 		border: 2px solid transparent;
 		box-sizing: content-box;
@@ -52,11 +65,62 @@
 		animation: pulse 0.4s;
 		box-shadow: 0 0 0 0 vars.$lose;
 	}
+
+	.aftergame-options {
+		width: 90vw;
+		max-width: 350px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 5px;
+		background-color: hsla(hue(vars.$primary-light), 50, 50, 0.25);
+		border-radius: 5px;
+		padding: 20px;
+		font-size: 1rem;
+		label {
+			width: 100%;
+			text-align: center;
+			color: vars.$secondary-darkest;
+			font-family: sans-serif;
+			font-size: 1em;
+			cursor: pointer;
+			user-select: none;
+			input {
+				display: none;
+			}
+			strong {
+				font-size: 1.2em;
+			}
+			span {
+				color: vars.$primary-light;
+				font-weight: 600;
+			}
+			margin-bottom: 5px;
+		}
+		button {
+			width: 100%;
+			border: 0;
+			outline: 0;
+			background-color: vars.$secondary-lightest;
+			border-radius: 16px;
+			font-size: 0.9em;
+			padding: 0.4em;
+			color: vars.$secondary-darkest;
+			cursor: pointer;
+		}
+	}
 }
 
 @media (min-width: 768px) {
 	.Game-container {
 		flex-direction: row;
-		gap: 0;
+		& > div:first-child {
+			& > div:first-child {
+				order: 0;
+			}
+			& > div:last-child {
+				order: 1;
+			}
+		}
 	}
 }

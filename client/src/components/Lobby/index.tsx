@@ -22,18 +22,21 @@ const difficultyOptions = [
 ];
 
 export const Lobby = ({}: GameProps) => {
+	const { goToBase } = usePanel();
+	const { logged, client } = useClient();
 	const [difficulty, setDifficulty] = useState<number>(
 		difficultyOptions[0].difficulty,
 	);
 	const [time, setTime] = useState<Time | string>(timeOptions[0]);
 	const [isPlaying, setIsPlaying] = useState<boolean>(false);
-	const { goToBase } = usePanel();
-	const { logged, client } = useClient();
 	const [gameResults, setGameResults] = useState<GameResult | null>(null);
+
+	const goBackToLobby = () => {
+		setIsPlaying(false);
+	};
 
 	useEffect(() => {
 		if (gameResults && client) {
-			console.log('renders');
 			sendGameResults({
 				url: '../api/scores',
 				username: client.player.username,
@@ -55,6 +58,7 @@ export const Lobby = ({}: GameProps) => {
 				difficulty={difficulty}
 				time={time}
 				setGameResults={setGameResults}
+				goBackToLobby={goBackToLobby}
 			/>
 		);
 	}

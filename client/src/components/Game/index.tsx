@@ -8,35 +8,51 @@ import { GameStates } from './utils';
 import { Info } from './Info';
 import { GameResult } from './utils';
 import { formatTime } from '../../hooks/useTime/time';
+import { usePanel } from '../../providers/PanelProvider';
+import { Section } from '../App';
 interface GameProps {
 	difficulty: number;
 	time: Time | string;
 	setGameResults: React.Dispatch<React.SetStateAction<GameResult | null>>;
+	goBackToLobby: () => void;
 }
 
-export const Game = ({ difficulty, time, setGameResults }: GameProps) => {
+export const Game = ({
+	difficulty,
+	time,
+	setGameResults,
+	goBackToLobby,
+}: GameProps) => {
+	const { goToSection } = usePanel();
 	const [board, setBoard] = useState<BoardPiece[][]>(() =>
 		createBoard(difficulty),
 	);
 	const [wins, setWins] = useState<number>(0);
 	const [losses, setLosses] = useState<number>(0);
 	const [boardVisibility, setBoardVisibilty] = useState<boolean>(true);
-	const [completed, setCompleted] = useState<string[]>([]);
 	const [selected, setSelected] = useState<BoardPiece[]>([]);
 	const [pairs, setPairs] = useState<BoardPiece[][]>([]);
+	const [completed, setCompleted] = useState<string[]>([]);
 	const [gameState, setGameState] = useState<GameStates>(GameStates.NotPlaying);
+	const [saveScore, setSaveScore] = useState<boolean>(true);
 	const [cssBasedOnGameState, setCssBasedOnGameState] = useState<string>('');
-	const { timer, isTimerRunning, addTimeOnRunning, stopTimer, startTimer } =
-		useTimer(
-			typeof time !== 'string'
-				? {
-						to: time,
-						autostart: false,
-				  }
-				: {
-						autostart: false,
-				  },
-		);
+	const {
+		timer,
+		isTimerRunning,
+		addTimeOnRunning,
+		stopTimer,
+		startTimer,
+		restartTimer,
+	} = useTimer(
+		typeof time !== 'string'
+			? {
+					to: time,
+					autostart: false,
+			  }
+			: {
+					autostart: false,
+			  },
+	);
 	const hideAfterSelectionRef = useRef<NodeJS.Timeout>(setTimeout(() => {}, 0));
 
 	const select = (thisPiece: BoardPiece) => {
@@ -108,6 +124,34 @@ export const Game = ({ difficulty, time, setGameResults }: GameProps) => {
 		keepRunning && hideBoardAfterTheTime(difficulty);
 	};
 
+	const restartGame = () => {
+		setSelected([]);
+		setPairs([]);
+		setCompleted([]);
+		setWins(0);
+		setLosses(0);
+		setGameState(GameStates.NotPlaying);
+		stopTimer();
+		restartTimer();
+		hideBoardAfterTheTime(difficulty).then(() => {
+			startTimer();
+			setGameState(GameStates.Playing);
+		});
+	};
+
+	const saveGameResult = () => {
+		saveScore &&
+			setGameResults({
+				result: gameState,
+				wins: wins - losses,
+				time:
+					typeof time === 'string'
+						? `${formatTime(timer)} (custom)`
+						: formatTime(time),
+				difficulty,
+			});
+	};
+
 	useEffect(() => {
 		hideBoardAfterTheTime(difficulty).then(() => {
 			startTimer();
@@ -126,28 +170,15 @@ export const Game = ({ difficulty, time, setGameResults }: GameProps) => {
 			clearTimeout(hideAfterSelectionRef.current);
 			setBoardVisibilty(false);
 			switchAllPiecesVisibility(true);
-			let result;
 			if (wins > losses) {
-				result = GameStates.Win;
 				setGameState(GameStates.Win);
 			}
 			if (wins < losses) {
-				result = GameStates.Lose;
 				setGameState(GameStates.Lose);
 			}
 			if (wins === losses) {
-				result = GameStates.Tie;
 				setGameState(GameStates.Tie);
 			}
-			setGameResults({
-				result: result as GameStates,
-				wins: wins - losses,
-				time:
-					typeof time === 'string'
-						? `${formatTime(timer)} (custom)`
-						: formatTime(time),
-				difficulty,
-			});
 		}
 	}, [isTimerRunning]);
 
@@ -211,16 +242,58 @@ export const Game = ({ difficulty, time, setGameResults }: GameProps) => {
 
 	return (
 		<div className={`Game-container ${cssBasedOnGameState}`}>
-			<Info
-				wins={wins}
-				time={time}
-				timer={timer}
-				losses={losses}
-				stopTimer={stopTimer}
-				gameState={gameState}
-				difficulty={difficulty}
-				cssBasedOnGameState={cssBasedOnGameState}
-			/>
+			<div>
+				<Info
+					wins={wins}
+					time={time}
+					timer={timer}
+					losses={losses}
+					stopTimer={stopTimer}
+					gameState={gameState}
+					difficulty={difficulty}
+					cssBasedOnGameState={cssBasedOnGameState}
+				/>
+				{gameState !== GameStates.Playing &&
+					gameState !== GameStates.NotPlaying && (
+						<div className="aftergame-options">
+							<label htmlFor="save-score">
+								<input
+									type="checkbox"
+									name="save-score"
+									id="save-score"
+									defaultChecked={saveScore}
+									onChange={() => setSaveScore((prev) => !prev)}
+								/>
+								Save this score like the lastest? -
+								<span className="checkbox">{saveScore ? ' Yes' : ' No'}</span>
+							</label>
+							<button
+								onClick={() => {
+									saveGameResult();
+									restartGame();
+								}}
+							>
+								Restart game with the same options
+							</button>
+							<button
+								onClick={() => {
+									saveGameResult();
+									goToSection(Section.Scoreboard);
+								}}
+							>
+								Go to Scoreboard
+							</button>
+							<button
+								onClick={() => {
+									saveGameResult();
+									goBackToLobby();
+								}}
+							>
+								Go back to lobby
+							</button>
+						</div>
+					)}
+			</div>
 			<Board
 				board={board}
 				select={select}
