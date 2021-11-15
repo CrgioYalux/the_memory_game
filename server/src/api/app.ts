@@ -10,7 +10,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
 	'/play',
-	express.static(path.join(__dirname, '..', '..', '..', 'client', 'build')),
+	express.static(
+		path.join(__dirname, '..', '..', '..', '..', 'client', 'build'),
+	),
 );
 
 router(app);
