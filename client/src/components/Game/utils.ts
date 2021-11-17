@@ -9,13 +9,6 @@ export enum GameStates {
 	Tie = 'TIE',
 }
 
-export type GameResult = {
-	result: GameStates;
-	time: string;
-	wins: number;
-	difficulty: number;
-};
-
 export type BoardPiece = {
 	value: {
 		label: string;

@@ -6,22 +6,21 @@ import { Board } from './Board';
 import { createBoard, BoardPiece } from './utils';
 import { GameStates } from './utils';
 import { Info } from './Info';
-import { GameResult } from './utils';
 import { formatTime } from '../../hooks/useTime/time';
 import { usePanel } from '../../providers/PanelProvider';
 import { Section } from '../App';
 interface GameProps {
 	difficulty: number;
 	time: Time | string;
-	setGameResults: React.Dispatch<React.SetStateAction<GameResult | null>>;
 	goBackToLobby: () => void;
+	saveGameResults: (wins:number, time:string, difficulty:number) => void;
 }
 
 export const Game = ({
 	difficulty,
 	time,
-	setGameResults,
 	goBackToLobby,
+	saveGameResults
 }: GameProps) => {
 	const { goToSection } = usePanel();
 	const [board, setBoard] = useState<BoardPiece[][]>(() =>
@@ -141,19 +140,6 @@ export const Game = ({
 		});
 	};
 
-	const saveGameResult = () => {
-		saveScore &&
-			setGameResults({
-				result: gameState,
-				wins: wins - losses,
-				time:
-					typeof time === 'string'
-						? `${formatTime(timer)} (custom)`
-						: formatTime(time),
-				difficulty,
-			});
-	};
-
 	useEffect(() => {
 		hideBoardAfterTheTime(difficulty).then(() => {
 			startTimer();
@@ -271,7 +257,7 @@ export const Game = ({
 							</label>
 							<button
 								onClick={() => {
-									saveGameResult();
+									saveScore && saveGameResults(wins - losses, typeof time === 'string' ? `${formatTime(timer)} (custom)` : formatTime(time), difficulty);
 									restartGame();
 								}}
 							>
@@ -279,7 +265,7 @@ export const Game = ({
 							</button>
 							<button
 								onClick={() => {
-									saveGameResult();
+									saveScore && saveGameResults(wins - losses, typeof time === 'string' ? `${formatTime(timer)} (custom)` : formatTime(time), difficulty);
 									goToSection(Section.Scoreboard);
 								}}
 							>
@@ -287,7 +273,7 @@ export const Game = ({
 							</button>
 							<button
 								onClick={() => {
-									saveGameResult();
+									saveScore && saveGameResults(wins - losses, typeof time === 'string' ? `${formatTime(timer)} (custom)` : formatTime(time), difficulty);
 									goBackToLobby();
 								}}
 							>

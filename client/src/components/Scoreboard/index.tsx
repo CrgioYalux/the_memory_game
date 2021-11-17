@@ -47,20 +47,28 @@ export const Scoreboard = ({}: ScoreboardProps) => {
 				</tr>
 			</thead>
 			<tbody>
-				{scores.map((score) => {
-					return (
-						<tr
-							key={score.id}
-							className={client?.id === score.id ? 'is_client' : ''}
-						>
-							<td>{score.player.nickname}</td>
-							<td>{score.game.difficulty}</td>
-							<td>{score.game.points}</td>
-							<td>{score.game.time}</td>
-							<td>{formatDayMonthYear(score.updatedAt)}</td>
-						</tr>
-					);
-				})}
+				{client && (
+					<tr key="client" className="is_client">
+						<td>{client.player.nickname}</td>
+						<td>{client.game.difficulty}</td>
+						<td>{client.game.points}</td>
+						<td>{client.game.time}</td>
+						<td>{formatDayMonthYear(client.updatedAt)}</td>
+					</tr>
+				)}
+				{scores
+					.filter((score) => score.id !== client?.id)
+					.map((score) => {
+						return (
+							<tr key={score.id}>
+								<td>{score.player.nickname}</td>
+								<td>{score.game.difficulty}</td>
+								<td>{score.game.points}</td>
+								<td>{score.game.time}</td>
+								<td>{formatDayMonthYear(score.updatedAt)}</td>
+							</tr>
+						);
+					})}
 			</tbody>
 		</table>
 	);

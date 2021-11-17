@@ -8,20 +8,21 @@ export type Client = {
 	game: {
 		points: number;
 		time: string;
+		difficulty: number;
 	};
 	id: string;
 	updatedAt: Date;
 };
 
 interface ClientContextProps {
-	client: Client | undefined;
-	setClient: React.Dispatch<React.SetStateAction<Client | undefined>>;
+	client: Client | null;
+	setClient: React.Dispatch<React.SetStateAction<Client | null>>;
 	logged: boolean;
 	logout: () => void;
 }
 
 const ClientContext = createContext<ClientContextProps>({
-	client: undefined,
+	client: null,
 	setClient: () => {},
 	logged: false,
 	logout: () => {},
@@ -34,10 +35,10 @@ interface ClientProviderProps {
 }
 
 export const ClientProvider = ({ children }: ClientProviderProps) => {
-	const [client, setClient] = useState<Client>();
+	const [client, setClient] = useState<Client | null>(null);
 
 	const logout = () => {
-		setClient(undefined);
+		setClient(null);
 	};
 
 	const value = {

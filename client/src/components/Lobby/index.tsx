@@ -5,7 +5,6 @@ import { useClient } from '../../providers/ClientProvider';
 import { formatTime } from '../../hooks/useTime/time';
 import { Game } from '../Game';
 import { Time } from '../../hooks/useTime/time';
-import { GameResult } from '../Game/utils';
 import { sendGameResults } from './utils';
 
 interface GameProps {}
@@ -23,29 +22,42 @@ const difficultyOptions = [
 
 export const Lobby = ({}: GameProps) => {
 	const { goToBase } = usePanel();
-	const { logged, client } = useClient();
+	const { logged, client, setClient } = useClient();
 	const [difficulty, setDifficulty] = useState<number>(
 		difficultyOptions[0].difficulty,
 	);
 	const [time, setTime] = useState<Time | string>(timeOptions[0]);
 	const [isPlaying, setIsPlaying] = useState<boolean>(false);
-	const [gameResults, setGameResults] = useState<GameResult | null>(null);
 
 	const goBackToLobby = () => {
 		setIsPlaying(false);
 	};
 
-	useEffect(() => {
-		if (gameResults && client) {
+	const saveGameResults = (wins: number, time: string, difficulty: number) => {
+		if (client) {
 			sendGameResults({
 				url: '../api/scores',
 				username: client.player.username,
-				points: gameResults.wins,
-				time: gameResults.time,
-				difficulty: gameResults.difficulty,
+				points: wins,
+				time,
+				difficulty,
+			});
+			setClient((prev) => {
+				if (prev !== null) {
+					const { game, updatedAt, ...rest } = prev;
+					return {
+						game: {
+							points: wins,
+							time,
+							difficulty,
+						},
+						updatedAt: new Date(),
+						...rest,
+					};
+				} else return prev;
 			});
 		}
-	}, [gameResults]);
+	};
 
 	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
@@ -57,8 +69,8 @@ export const Lobby = ({}: GameProps) => {
 			<Game
 				difficulty={difficulty}
 				time={time}
-				setGameResults={setGameResults}
 				goBackToLobby={goBackToLobby}
+				saveGameResults={saveGameResults}
 			/>
 		);
 	}
