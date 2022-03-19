@@ -1,1 +1,1 @@
-web:  npm run start
+web: node ./server/dist/src/index.js
