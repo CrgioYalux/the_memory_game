@@ -6,7 +6,6 @@
 	"scripts": {
 		"start": "node ./dist/src/index.js",
 		"dev": "nodemon --config ./nodemon.json ./src/index.ts",
-		"postinstall": "tsc",
     "build": "tsc"
 	},
 	"keywords": [],

@@ -19,7 +19,8 @@
 		"build:all": "npm run build:client && npm run build:server",
 		"start": "npm run build:all && npm run start --workspace=server",
 		"dev": "npm run build:client && npm run dev:server",
-		"deploy": "git add . && git commit -m Heroku && git push heroku master"
+		"deploy": "git add . && git commit -m Heroku && git push heroku master",
+		"postinstall": "npm run build:all"
 	},
 	"devDependencies": {
 		"typescript": "4.4.3"
